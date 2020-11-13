@@ -150,13 +150,65 @@
   (re-search-forward argRegex)
   (backward-char)
   (point)
-)
+  )
+
+(defun pony-search-forward (argRegex)
+  (setq $exit nil)
+   (while (not $exit)
+	 (if (equal (point) (point-max))
+		  ;; If at end of buffer.
+		  (progn
+			  (setq $exit t)
+			 )
+		;; If at a character in the regex.
+		(progn
+		  (if (looking-at argRegex)
+				;; End of the word.
+				(progn
+				  (setq $exit t)
+				  )
+			 (progn
+				(forward-char)
+				)
+			 )
+		  )
+		)
+	 )
+	;; (backward-char)
+	(point)
+  )
+
+(defun pony-search-backward (argRegex)
+  ;; (forward-char)
+  (setq $exit nil)
+   (while (not $exit)
+	 (if (equal (point) (point-min))
+		  ;; If at end of buffer.
+		  (progn
+			  (setq $exit t)
+			 )
+		;; If at a character in the regex.
+		(progn
+		  (if (looking-at argRegex)
+				;; End of the word.
+				(progn
+				  (setq $exit t)
+				  )
+			 (progn
+				(backward-char)
+				)
+			 )
+		  )
+		)
+	 )
+	(forward-char)
+	(point)
+	)
 
 (defun pony-delete-left-word ()
   (interactive)
   (let ($pL $pR)
     (setq $exit nil)
-    (backward-char)
     (while (not $exit)
     ;; If the cursor begins on a word.
     ;;
@@ -253,9 +305,10 @@
       (if (looking-at "[-_a-zA-Z0-9\$\#\.]+")
           (progn
             (setq temp (point))
-            (setq $pR (pony-re-search-forward "[^-_a-zA-Z0-9\$\#][^\\.]"))
+            ;; (setq $pR (pony-re-search-forward "[^-_a-zA-Z0-9\$\#][^\\.]"))
+				(setq $pR (pony-search-forward "[^-_a-zA-Z0-9\$\#][^\\.]"))
             (goto-char temp)
-            (setq $pL (pony-re-search-backward "[^-_a-zA-Z0-9\$\#]"))
+            (setq $pL (pony-search-backward "[^-_a-zA-Z0-9\$\#]"))
             (setq $exit t)
             )
         ;; Else-If the cursor begins on an operator.
@@ -265,16 +318,21 @@
               (progn
                 ;; Move backwards to the end of the operator.
                 (setq temp (point))
-                (setq $pR (pony-re-search-forward "[^\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~]"))
+					 (setq $pR (pony-search-forward "[^\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~]"))
+										;; (pony-re-search-forward "[^\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~]")
+									 ;; (point-max)
+									 ;; )
+							 ;; )
                 (setq $pR (+ $pR 1))
                 (goto-char temp)
-                (setq $pL (pony-re-search-backward "[^\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~]"))
+                (setq $pL (pony-search-backward "[^\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~]"))
                 (setq $exit t)
             )
             ;; Else, increment cursor position.
             (progn
               (if (equal (point) (point-max))
-                  (user-error "Error. Hit end of buffer."))
+						 (user-error "Error. Hit end of buffer.")
+					 )
               (forward-char)
               )
             )
