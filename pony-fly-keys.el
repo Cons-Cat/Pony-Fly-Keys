@@ -174,16 +174,14 @@
 		  )
 		)
 	 )
-	;; (backward-char)
 	(point)
   )
 
 (defun pony-search-backward (argRegex)
-  ;; (forward-char)
-  (setq $exit nil)
+   (setq $exit nil)
    (while (not $exit)
 	 (if (equal (point) (point-min))
-		  ;; If at end of buffer.
+		  ;; If at start of buffer.
 		  (progn
 			  (setq $exit t)
 			 )
@@ -215,9 +213,9 @@
       (if (looking-at "[-_a-zA-Z0-9\$\#\.]+")
           (progn
             (setq temp (point))
-            (setq $pR (pony-re-search-forward "[^-_a-zA-Z0-9\$\#]"))
+            (setq $pR (pony-search-forward "[^-_a-zA-Z0-9\$\#]"))
             (goto-char temp)
-            (setq $pL (pony-re-search-backward "[^-_a-zA-Z0-9\$\#][^\\.]"))
+            (setq $pL (pony-search-backward "[^-_a-zA-Z0-9\$\#][^\\.]"))
             ;; Move cursor beyond . symbol.
             (backward-char)
             (if (looking-at "\\.") (setq $pL (- $pL 1)))
