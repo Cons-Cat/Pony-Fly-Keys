@@ -238,9 +238,9 @@
               (progn
                 ;; Move backwards to the end of the operator.
                 (setq temp (point))
-                (setq $pR (pony-re-search-forward "[^\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~]"))
+                (setq $pR (pony-search-forward "[^\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~]"))
                 (goto-char temp)
-                (setq $pL (pony-re-search-backward "[^\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~]"))
+                (setq $pL (pony-search-backward "[^\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~]"))
                 (setq $exit t)
 					 )
             ;; Else, decrement cursor position.
@@ -269,7 +269,7 @@
       (if (looking-at "[-_a-zA-Z0-9\$\#\.]+")
           (progn
             ;; (backward-char)
-            (setq $pL (pony-re-search-backward "[^-_a-zA-Z0-9\$\#][^\\.]"))
+            (setq $pL (pony-search-backward "[^-_a-zA-Z0-9\$\#][^\\.]"))
             ;; Move cursor beyond . symbol.
             (backward-char)
             ;; Prevent ending on brackets or white-space.
@@ -282,7 +282,7 @@
           (if (looking-at "[\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~]+")
               (progn
                 ;; Move backwards to the end of the operator.
-                (setq $pL (pony-re-search-backward "[^\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~]"))
+                (setq $pL (pony-search-backward "[^\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~]"))
                 (setq $exit t)
 					 )
             ;; Else, decrement cursor position.
