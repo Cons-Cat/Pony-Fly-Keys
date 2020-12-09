@@ -5,10 +5,7 @@
                 (/
                  (- (line-end-position) $p)
                  2)
-                (point))
-               )
-    )
-  )
+                (point)))))
 
 (defun pony-binary-beginning-of-line()
   (interactive)
@@ -17,10 +14,7 @@
                 (/
                  (- $p (line-beginning-position))
                  2)
-                (line-beginning-position))
-               )
-    )
-  )
+                (line-beginning-position)))))
 
 ;; https://www.emacswiki.org/emacs/HalfScrolling
 (defun zz-scroll-half-page (direction)
@@ -47,21 +41,26 @@
   (interactive)
   (let ((open "#region\n")
         (close "#endregion\n"))      ; Default kind of region
-    (cond ((equal major-mode 'emacs-lisp-mode) (setq open "; region\n") (setq close "; endregion\n")
-           )
-          ((equal major-mode 'c++-mode) (setq open "#pragma region\n") (setq close "#pragma endregion\n")
-           )
-          )
-    (xah-insert-bracket-pair open close)
-    )
-  )
+    (cond ((equal major-mode'emacs-lisp-mode) (setq open "; region\n") (setq close "; endregion\n"))
+          ((equal major-mode 'c++-mode) (setq open "#pragma region\n") (setq close "#pragma endregion\n")))
+    (xah-insert-bracket-pair open close)))
+
+(defun pony-insert-angle-pair()
+  (interactive)
+  (let ((open "<")
+        (close ">"))
+    ;; (cond ((equal major-mode 'emacs-lisp-mode) (setq open "; region\n") (setq close "; endregion\n")
+    ;; )
+    ;; ((equal major-mode 'c++-mode) (setq open "#pragma region\n") (setq close "#pragma endregion\n")
+    ;; )
+    ;; )
+    (xah-insert-bracket-pair open close)))
 
 (defun pony-copy-current-word()
   (interactive)
   (if (use-region-p)
 		(progn
-		  (copy-region-as-kill (region-beginning) (region-end))
-		  )
+		  (copy-region-as-kill (region-beginning) (region-end)))
 	 (progn
 		(let ( $pt $p1 $p2 )
 		  (setq $pt (point))
@@ -78,11 +77,7 @@
 		  ;; Place cursor at whichever end of the word is closer
 		  ;; to its starting position.
 		  (when (< (- $pt $p1) (- $p2 $pt))
-			 (goto-char $p1))
-		  )
-		)
-	 )
-  )
+			 (goto-char $p1))))))
 
 (defun pony-copy-current-line()
   (interactive)
@@ -95,9 +90,7 @@
     (setq $p2 (point))
     ;;
     (copy-region-as-kill $p1 $p2)
-    (nav-flash-show $p1 $p2)
-    )
-  )
+    (nav-flash-show $p1 $p2)))
 
 (defun pony-mark-line()
   (interactive)
@@ -108,17 +101,13 @@
         (if (equal (point) (region-end))
             (progn
               (re-search-forward "\n")
-              (skip-chars-forward "\t ")
-              )
+              (skip-chars-forward "\t"))
           ;;
           (progn
             (beginning-of-line)
             (skip-chars-backward "\t\n ")
             (beginning-of-line)
-            (skip-chars-forward "\t ")
-            )
-          )
-        )
+            (skip-chars-forward "\t "))))
     ;; Mark the beginning of leading whitespace to
     ;; the end of current line, including the newline.
     (progn
@@ -134,30 +123,18 @@
         ;;
         (set-mark $p1)
         )
-      )
-    )
-  )
-
-;; (defvar pony-regex-word "[-_a-zA-Z0-9\$\#\.]+"
-;;   "Regex used for pony-finding discrete words."
-;;   )
-
-;; (defvar pony-regex-operator "[\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~]+"
-;;   "Regex used for pony-finding discrete operators."
-;;   )
+      )))
 
 (defun pony-re-search-backward (argRegex)
   (forward-char)
   (re-search-backward argRegex)
   (forward-char)
-  (point)
-  )
+  (point))
 
 (defun pony-re-search-forward (argRegex)
   (re-search-forward argRegex)
   (backward-char)
-  (point)
-  )
+  (point))
 
 (defun pony-search-forward (argRegex)
   (setq $exit nil)
@@ -165,24 +142,16 @@
 	 (if (equal (point) (point-max))
 		  ;; If at end of buffer.
 		  (progn
-			 (setq $exit t)
-			 )
+			 (setq $exit t))
 		;; If at a character in the regex.
 		(progn
 		  (if (looking-at argRegex)
 				;; End of the word.
 				(progn
-				  (setq $exit t)
-				  )
+				  (setq $exit t))
 			 (progn
-				(forward-char)
-				)
-			 )
-		  )
-		)
-	 )
-  (point)
-  )
+				(forward-char))))))
+  (point))
 
 (defun pony-search-backward (argRegex)
   (setq $exit nil)
@@ -190,29 +159,22 @@
 	 (if (equal (point) (point-min))
 		  ;; If at start of buffer.
 		  (progn
-			 (setq $exit t)
-			 )
+			 (setq $exit t))
 		;; If at a character in the regex.
 		(progn
 		  (if (looking-at argRegex)
 				;; End of the word.
 				(progn
-				  (setq $exit t)
-				  )
+				  (setq $exit t))
 			 (progn
-				(backward-char)
-				)
-			 )
-		  )
-		)
-	 )
+				(backward-char))))))
   (forward-char)
-  (point)
-  )
+  (point))
 
 (defun pony-delete-left-word ()
   (interactive)
   (let ($pL $pR)
+	 (setq $white_start nil)
     (setq $exit nil)
     (while (not $exit)
 		;; If the cursor begins on a word.
@@ -220,43 +182,44 @@
       (if (looking-at "[-_a-zA-Z0-9\$\#\.]+")
           (progn
             (setq temp (point))
-            (setq $pR (pony-search-forward "[^-_a-zA-Z0-9\$\#]"))
-            (goto-char temp)
-            (setq $pL (pony-search-backward "[^-_a-zA-Z0-9\$\#][^\\.]"))
-            ;; Move cursor beyond . symbol.
-            (backward-char)
+            (if (equal $white_start nil)
+					 (setq $pR (pony-search-forward "[^-_a-zA-Z0-9\$\#]"))
+				  (setq $pR $white_start)
+				  )
+				;; Move cursor beyond . symbol.
+				(goto-char temp)
+				(setq $pL (pony-search-backward "[^-_a-zA-Z0-9\$\#][^\\.]"))
+				(backward-char)
             (if (looking-at "\\.") (setq $pL (- $pL 1)))
             (forward-char)
             ;; Prevent ending on brackets or white-space.
             (when (looking-at "\s(\s)\s- ") (setq $pL (+ $pL 1)))
-            (setq $exit t)
-            )
+            (setq $exit t))
         ;; Else-If the cursor begins on an operator.
         ;;
         (progn
-          (if (looking-at "[\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~]+")
+          (if (looking-at "[\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~\>\<]+")
               (progn
                 ;; Move backwards to the end of the operator.
                 (setq temp (point))
-                (setq $pR (pony-search-forward "[^\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~]"))
-                (goto-char temp)
-                (setq $pL (pony-search-backward "[^\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~]"))
-                (setq $exit t)
-					 )
+                (if (equal $white_start nil)
+						  (setq $pR (pony-search-forward "[^\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~\>\<]"))
+                 	(setq $pR $white_start)
+						)
+					 (goto-char temp)
+					 (setq $pL (pony-search-backward "[^\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~\>\<]"))
+					 (setq $exit t))
             ;; Else, decrement cursor position.
             (progn
               (if (equal (point) (point-min))
                   (user-error "Error. Hit start of buffer."))
-              (backward-char)
-              )
-            )
-          )
-        )
-      )
+				  (if (equal $white_start nil)
+						(setq $white_start (point))
+					 (if (looking-at "[\"\(\)]")
+						  (setq $white_start (- (point) 0))))
+				  (backward-char))))))
     ;;
-    (delete-region $pL $pR)
-    )
-  )
+    (delete-region $pL $pR)))
 
 (defun pony-move-left-word ()
   (interactive)
@@ -274,8 +237,7 @@
             (backward-char)
             ;; Prevent ending on brackets or white-space.
             (when (looking-at "\s(\s)\s- ") (setq $pL (+ $pL 1)))
-            (setq $exit t)
-            )
+            (setq $exit t))
         ;; Else-If the cursor begins on an operator.
         ;;
         (progn
@@ -283,26 +245,20 @@
               (progn
                 ;; Move backwards to the end of the operator.
                 (setq $pL (pony-search-backward "[^\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~]"))
-                (setq $exit t)
-					 )
+                (setq $exit t))
             ;; Else, decrement cursor position.
             (progn
               (if (equal (point) (point-min))
                   (user-error "Error. Hit start of buffer."))
               (backward-char)
-              )
-            )
-          )
-        )
-      )
+              )))))
     ;;
-    (goto-char $pL)
-    )
-  )
+    (goto-char $pL)))
 
 (defun pony-delete-right-word ()
   (interactive)
   (let ($pL $pR)
+	 (setq $white_start nil)
     (setq $exit nil)
     (while (not $exit)
 		;; If the cursor begins on a word.
@@ -313,41 +269,41 @@
             ;; (setq $pR (pony-re-search-forward "[^-_a-zA-Z0-9\$\#][^\\.]"))
 				(setq $pR (pony-search-forward "[^-_a-zA-Z0-9\$\#][^\\.]"))
             (goto-char temp)
-            (setq $pL (pony-search-backward "[^-_a-zA-Z0-9\$\#]"))
-            (setq $exit t)
-            )
+				(if (equal $white_start nil)
+					 (setq $pL (pony-search-backward "[^-_a-zA-Z0-9\$\#]"))
+				  (setq $pL $white_start)
+				  )
+            (setq $exit t))
         ;; Else-If the cursor begins on an operator.
         ;;
         (progn
-          (if (looking-at "[\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~]+")
+          (if (looking-at "[\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~\>\<]+")
               (progn
                 ;; Move backwards to the end of the operator.
                 (setq temp (point))
-					 (setq $pR (pony-search-forward "[^\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~]"))
-					 ;; (pony-re-search-forward "[^\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~]")
-					 ;; (point-max)
-					 ;; )
-					 ;; )
-                (setq $pR (+ $pR 1))
+					 (setq $pR (pony-search-forward "[^\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~\>\<]"))
+					 (setq $pR (+ $pR 1))
                 (goto-char temp)
-                (setq $pL (pony-search-backward "[^\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~]"))
-                (setq $exit t)
-					 )
+					 (if (equal $white_start nil)
+						  (setq $pL (pony-search-backward "[^\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~\>\<]"))
+						(setq $pL $white_start)
+						)
+                (setq $exit t))
             ;; Else, increment cursor position.
             (progn
               (if (equal (point) (point-max))
-						(user-error "Error. Hit end of buffer.")
-					 )
-              (forward-char)
-              )
-            )
-          )
-        )
-      )
+						(user-error "Error. Hit end of buffer."))
+				  (if (equal $white_start nil)
+						(progn
+						  (if (looking-at "[\"\(\)]")
+								(setq $white_start (+ (point) 1))
+							 (setq $white_start (point))
+							 ))
+					 (if (looking-at "[\"\(\)]")
+						  (setq $white_start (+ (point) 1))))
+				  (forward-char))))))
     ;;
-    (delete-region $pL $pR)
-    )
-  )
+    (delete-region $pL $pR)))
 
 (defun pony-move-right-word ()
   (interactive)
@@ -364,29 +320,20 @@
             ;; Prevent ending on brackets or white-space.
             (backward-char)
             (when (looking-at "[^\\.]") (setq $pR (- $pR 1)))
-            (setq $exit t)
-            )
+            (setq $exit t))
         ;; Else-If the cursor begins on an operator.  ++  oaeu
         ;;
         (progn
-          (if (looking-at "[\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~]+")
+          (if (looking-at "[\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~\>\<]+")
               (progn
                 ;; Move backwards to the end of the operator.
-                (setq $pR (pony-re-search-forward "[^\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~]"))
+                (setq $pR (pony-re-search-forward "[^\+\-\=\*\/\:\^\?\;\.\,\|\&\%\~\>\<]"))
                 ;; (setq $pR (- $pR 1))
-                (setq $exit t)
-					 )
+                (setq $exit t))
             ;; Else, increment cursor position.
             (progn
               (if (equal (point) (point-max))
                   (user-error "Error. Hit end of buffer."))
               (forward-char)
-              )
-            )
-          )
-        )
-      )
-    ;;
-    (goto-char $pR)
-    )
-  )
+              )))))
+    (goto-char $pR)))
